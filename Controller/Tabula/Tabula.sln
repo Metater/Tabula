@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tabula", "Tabula\Tabula.csproj", "{06C73846-2159-4736-857F-1DC85B8798EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06C73846-2159-4736-857F-1DC85B8798EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C73846-2159-4736-857F-1DC85B8798EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C73846-2159-4736-857F-1DC85B8798EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C73846-2159-4736-857F-1DC85B8798EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2AD04953-F12A-4F5D-BD46-12D0B65AB2B0}
+	EndGlobalSection
+EndGlobal
