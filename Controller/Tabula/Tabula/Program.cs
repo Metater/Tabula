@@ -21,6 +21,10 @@ namespace Tabula
             Console.WriteLine(Directory.GetCurrentDirectory());
             string characterRegistryData = File.ReadAllText(Directory.GetCurrentDirectory() + @"\" + "CharacterRegistry.txt");
             CharacterRegistry characterRegistry = new CharacterRegistry(characterRegistryData);
+            foreach (byte b in characterRegistry.GetCharacterMatrix('0').matrix)
+            {
+                Console.WriteLine(b);
+            }
         }
         private static void General()
         {
