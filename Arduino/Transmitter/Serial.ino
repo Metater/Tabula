@@ -20,7 +20,7 @@ void tryReadSerialData()
       displayData[i] = incomingByte;
     }
     */
-    Serial.println(displayDataIndex);
+    //Serial.println(displayDataIndex);
     //Serial.readBytes(&displayData, 64);
     //Serial.println("DISAUASDBHSD");
     //Serial.println(displayData[63]);
@@ -41,7 +41,7 @@ void printSerialData()
     hex = formatHex(String(displayData[i], HEX));
     data += hex + ":";
   }
-  Serial.println(data);
+  //Serial.println(data);
 }
 
 void printDisplayRegionData(byte regionPacket[])
@@ -54,7 +54,7 @@ void printDisplayRegionData(byte regionPacket[])
     hex = formatHex(String(regionPacket[i], HEX));
     data += hex + ":";
   }
-  Serial.println(data);
+  //Serial.println(data);
 }
 
 String formatHex(String str)

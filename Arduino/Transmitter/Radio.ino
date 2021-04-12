@@ -30,7 +30,7 @@ void transmitServerData()
   radio.writeFast(&region2Packet, 32);
   radio.txStandBy();
   */
-  unsigned long startTime = micros();
+  //unsigned long startTime = micros();
   //printDisplayRegionData(region0Packet);
   if (!radio.writeFast(&region0Packet, 32))
   {
@@ -46,6 +46,6 @@ void transmitServerData()
   {
     radio.reUseTX();
   }
-  Serial.print("Time: ");
-  Serial.println(micros() - startTime);
+  //Serial.print("Time: ");
+  //Serial.println(micros() - startTime);
 }

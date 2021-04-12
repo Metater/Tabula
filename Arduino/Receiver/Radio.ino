@@ -2,7 +2,7 @@ void tryReadRadioData()
 {
   while (radio.available())
   {
-    unsigned long startTime = micros();
+    //unsigned long startTime = micros();
     
     byte radioData[32];
     radio.read(&radioData, 32);
@@ -12,7 +12,7 @@ void tryReadRadioData()
     parseRadioData(displayRegion, radioData);
     //printRadioData(radioData);
 
-    Serial.println(micros() - startTime);
+    //Serial.println(micros() - startTime);
   }
 }
 
@@ -27,7 +27,7 @@ void printRadioData(byte radioData[])
     hex = formatHex(String(radioData[i], HEX));
     data += hex + ":";
   }
-  Serial.println(data);
+  //Serial.println(data);
 }
 
 String formatHex(String str)

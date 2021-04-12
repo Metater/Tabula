@@ -21,14 +21,14 @@ void updateDisplayRegion(int region)
   switch(region)
   {
     case 0:
-      firstRegionReceived = micros();
+      //firstRegionReceived = micros();
       setDisplayColumns(0, 31);
       break;
     case 1:
       setDisplayColumns(31, 31);
       break;
     case 2:
-      Serial.println(micros() - firstRegionReceived);
+      //Serial.println(micros() - firstRegionReceived);
       setDisplayColumns(62, 2);
       break;
   }
