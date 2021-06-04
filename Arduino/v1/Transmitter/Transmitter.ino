@@ -36,8 +36,7 @@ void loop()
     ArrayToInteger receivedHash;
     Serial.readBytes(receivedHash.array, 4);
     Serial.readBytes(displayData, 32);
-    uint32_t hash = jenkins_one_at_a_time_hash(displayData, 32);
-    if (hash == receivedHash)
+    if (displayDataValid(receivedHash.integer))
     {
       transmitDisplayData();
     }
@@ -52,16 +51,29 @@ void loop()
     int constructionPos = 0;
     while (outOfSync != constructionPos <= 35)
     {
-
+      ArrayToInteger receivedHash;
+      copyArray(outOfSyncBuffer, constructionPos, receivedHash.array, 4);
+      copyArray(outOfSyncBuffer, constructionPos + 4, displayData, 32);
+      if (displayDataValid(receivedHash.integer))
+      {
+        outOfSync = false;
+        break;
+      }
       constructionPos++;
     }
   }
 }
 
-void copyC(int* src, int* dst, int len) {
+void copyArray(byte* src, int srcOffset, byte* dst, int len) {
     for (int i = 0; i < len; i++) {
-        dst[i] = src[i];
+        dst[i] = src[i + srcOffset];
     }
+}
+
+bool displayDataValid(uint32_t receivedHash)
+{
+  uint32_t hash = jenkins_one_at_a_time_hash(displayData, 32);
+  return hash == receivedHash;
 }
 
 void transmitDisplayData()
