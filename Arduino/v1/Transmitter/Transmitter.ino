@@ -19,6 +19,8 @@ void setup()
   radio.stopListening();
 }
 
+// Add acking later
+
 byte displayData[32];
 bool outOfSync = false;
 byte outOfSyncBuffer[71]; // For lower memory use could combine with displayData
