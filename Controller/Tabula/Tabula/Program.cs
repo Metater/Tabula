@@ -13,7 +13,7 @@ namespace Tabula
     {
         static void Main(string[] args)
         {
-            SerialPortInterface serialPortInterface = new();
+            SerialPortInterface serialPortInterface = new(3, 57600);
 
             serialPortInterface.port.DataReceived += (object sender, SerialDataReceivedEventArgs e) =>
             {
@@ -26,19 +26,40 @@ namespace Tabula
 
             Thread.Sleep(500);
 
-            serialPortInterface.Write(0xff);
-            for (int i = 0; i < 8; i++)
+            while (true)
             {
-                for (int j = 0; j < 64; j++)
+                byte[] data = new byte[1025];
+                int offset = 0;
+                Write(0xff, data, ref offset);
+                for (int i = 0; i < 8; i++)
                 {
-                    serialPortInterface.Write(0x00);
+                    for (int j = 0; j < 64; j++)
+                    {
+                        Write((byte)(63 - j), data, ref offset);
+                    }
+                    for (int j = 0; j < 64; j++)
+                    {
+                        Write((byte)j, data, ref offset);
+                    }
                 }
-                for (int j = 0; j < 64; j++)
-                {
-                    serialPortInterface.Write(0xff);
-                }
+                serialPortInterface.Write(data, data.Length);
+                Thread.Sleep(512);
+                Console.ReadLine();
             }
-            Console.ReadLine();
+        }
+
+        private static void Write(byte[] src, byte[] dst, ref int offset)
+        {
+            for (int i = 0; i < src.Length; i++)
+            {
+                dst[offset + i] = src[i];
+            }
+            offset += src.Length;
+        }
+
+        private static void Write(byte src, byte[] dst, ref int offset)
+        {
+            Write(new byte[] {src}, dst, ref offset);
         }
     }
 }

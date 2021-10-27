@@ -11,11 +11,9 @@ byte section = 0;
 
 unsigned long lastReceiveTime = 0;
 
-
-
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(57600);
 
   radio.begin();
 
@@ -25,50 +23,30 @@ void setup()
   radio.setDataRate(RF24_250KBPS);
 
   radio.stopListening();
-
-  Serial.println("Started!");
 }
 
 void send()
 {
-  /*
-  int tries = 0;
-  while (tries < 3 && !radio.writeFast(&packet, 32))
-  {
-    radio.reUseTX();
-    tries++;
-  }
-  */
   radio.write(&packet, 32);
 }
 
 void loop()
 {
-  if (millis() - lastReceiveTime > 100) section = 0;
+  if (millis() - lastReceiveTime > 128UL) section = 0;
+
+  if (Serial.available() < 32) return;
   
-  if (readData >= 1025)
-  { 
-    readData = 0;
-    Serial.println("Reading frames!");
-    
-    byte framePeriod = Serial.read();
-    Serial.readBytes(packet, 30);
-    packet[30] = framePeriod;
-    packet[31] = 0;
-    send();
+  lastReceiveTime = millis();
 
-    byte section = 1;
-    while (section < 33)
-    {
-      Serial.readBytes(packet, 31);
-      packet[31] = section;
-      send();
-      section++;
-    }
-
-    Serial.readBytes(packet, 2);
-    packet[31] = section;
-    send();
-    while (Serial.available()) Serial.read();
+  if (section == 0)
+  {
+    Serial.readBytes(packet, 1);
   }
+  else if (section <= 32)
+  {
+    Serial.readBytes(packet, 32);
+  }
+  else return;
+  send();
+  section++;
 }

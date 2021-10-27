@@ -7,8 +7,6 @@
 RF24 radio(7, 8); // CE, CSN
 const byte address[6] = "00001";
 
-const unsigned long newFramesAckDelay = 200; // ms
-
 LEDMatrixDriver lmd(8, 10); // Num 8x8 Segments, Chip Select
 
 byte packet[32];
@@ -16,16 +14,16 @@ byte packet[32];
 unsigned long framePeriod; // Range: 1ms - 256ms
 byte frames[1024]; // 16 frames worth
 
-bool newFrames = false;
 int nextFrame = 0;
 
 unsigned long frameEndTime = 0;
 
-unsigned long newFramesAckTime = 0;
+byte section = 0;
+unsigned long lastReceiveTime = 0;
 
 void setup()
 {
-  Serial.begin(115200);
+  Serial.begin(57600);
 
   radio.begin();
 
@@ -40,57 +38,42 @@ void setup()
   lmd.setIntensity(0);
 }
 
-int getOffset(byte section)
-{
-  return 30 + ((((int)section) - 1) * 31);
-}
-
 void loadFrame()
 {
   int offset = nextFrame * 64;
   for (int x = 0; x < 64; x++)
-    for (int y = 0; y < 8; y++)
-      lmd.setPixel(x, y, bitRead(frames[x + offset], y));
+    lmd.setColumn(x, frames[x + offset]);
   lmd.display();
   nextFrame++;
-  frameEndTime = millis() + framePeriod;
+    frameEndTime = millis() + framePeriod;
 }
 
 void loop()
 {
+  if (millis() - lastReceiveTime > 128UL) section = 0;
+  
   if (radio.available())
   {
+    lastReceiveTime = millis();
     radio.read(&packet, 32);
-    if (packet[31] == 0)
+    if (section == 0)
     {
-      framePeriod = ((unsigned long)packet[30]) + 1;
-      for (int i = 0; i < 30; i++)
-        frames[i] = packet[i];
-      newFrames = true;
-      newFramesAckTime = millis() + newFramesAckDelay;
+      framePeriod = ((unsigned long)packet[0]) + 1UL;
     }
-    else if (packet[31] <= 32)
+    else if (section <= 32)
     {
-      int offset = getOffset(packet[31]);
-      for (int i = 0; i < 31; i++)
-        frames[i + offset] = packet[i];
+      for (int i = 0; i < 32; i++)
+        frames[i + ((section - 1) * 32)] = packet[i];
     }
-    else if (packet[31] == 33)
+    else return;
+    if (section == 32)
     {
-      int offset = getOffset(packet[31]);
-      for (int i = 0; i < 2; i++)
-        frames[i + offset] = packet[i];
+      nextFrame = 0;
+      frameEndTime = 0;
     }
+    section++;
   }
-
-  if (newFrames && newFramesAckTime >= millis())
-  {
-    newFrames = false;
-    nextFrame = 0;
+  
+  if (millis() >= frameEndTime && nextFrame < 16)
     loadFrame();
-  }
-  else if (millis() >= frameEndTime)
-  {
-    if (nextFrame < 16) loadFrame();
-  }
 }

@@ -63,6 +63,12 @@ namespace Tabula
             port.Open();
         }
 
+        public SerialPortInterface(int com, int baudRate)
+        {
+            port = new("COM" + com, baudRate, Parity.None, 8, StopBits.One);
+            port.Open();
+        }
+
         public void Write(byte data)
         {
             port.Write(new byte[] { data }, 0, 1);
